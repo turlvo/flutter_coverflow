@@ -16,6 +16,7 @@ Add `coverflow: ^0.0.1` to your `pubspec.yaml` dependecies. And import it:
 ```
 import 'package:coverflow/coverflow.dart';
 ```
+<br>
 
 # How to use
 Simply add a Coverflow widget with required params.
@@ -74,4 +75,15 @@ final List<String> titles = [
       ),
     );
   }
+```
+<br>
+
+# Params
+```
+CoverFlow(
+    images: images,
+    titles: titles,
+    displayOnlyCenterTitle: true,
+    textStyle: TextStyle(color: Colors.red),
+)
 ```
