@@ -5,6 +5,8 @@ A simple horizontal coverflow widget.
 
 
 # Preview
+![Screen Recording 2021-11-25 at 1 51 14 PM](https://user-images.githubusercontent.com/24351423/143392660-f3c6da06-4518-4ffe-8ab1-caaeef606824.gif)
+![Screen Recording 2021-11-25 at 1 28 56 PM](https://user-images.githubusercontent.com/24351423/143392711-d8cf8a13-d71a-4353-ab1c-1510e4e2a333.gif)
 
 
 # Installation
