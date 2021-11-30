@@ -11,7 +11,7 @@ A simple horizontal coverflow widget.
 
 # Installation
 
-Add `coverflow: ^0.0.1` to your `pubspec.yaml` dependecies. And import it:
+Add `coverflow: ^2.0.0` to your `pubspec.yaml` dependecies. And import it:
 
 ```
 import 'package:coverflow/coverflow.dart';

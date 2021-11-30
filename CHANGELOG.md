@@ -1,2 +1,5 @@
+## [2.0.0]
+* Support Null Safety
+
 ## [0.0.1]
 * Initial release.

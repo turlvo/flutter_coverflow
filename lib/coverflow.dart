@@ -3,14 +3,14 @@ library coverflow;
 import 'package:flutter/material.dart';
 
 class CoverFlow extends StatefulWidget {
-  final List<String> titles;
+  final List<String>? titles;
   final List<Widget> images;
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
   final bool displayOnlyCenterTitle;
-  final Function onClicked;
+  final Function? onClicked;
 
   CoverFlow({
-    @required this.images,
+    required this.images,
     this.titles,
     this.onClicked,
     this.textStyle,
@@ -22,17 +22,17 @@ class CoverFlow extends StatefulWidget {
 }
 
 class _CoverFlowState extends State<CoverFlow> {
-  PageController _pageController;
+  PageController? _pageController;
   double currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: currentIndex.toInt());
-    _pageController.addListener(
+    _pageController!.addListener(
       () {
         setState(() {
-          currentIndex = _pageController.page ?? 0;
+          currentIndex = _pageController!.page ?? 0;
         });
       },
     );
@@ -75,20 +75,20 @@ class _CoverFlowState extends State<CoverFlow> {
 
 class CoverFlowCardItems extends StatelessWidget {
   final List<Widget> images;
-  final List<String> titles;
-  final Function onClicked;
+  final List<String>? titles;
+  final Function? onClicked;
   final double centerIndex;
   final double maxHeight;
   final double maxWidth;
-  final TextStyle textStyle;
-  final bool displayOnlyCenterTitle;
+  final TextStyle? textStyle;
+  final bool? displayOnlyCenterTitle;
 
   CoverFlowCardItems({
-    @required this.images,
-    @required this.titles,
-    @required this.centerIndex,
-    @required this.maxHeight,
-    @required this.maxWidth,
+    required this.images,
+    required this.titles,
+    required this.centerIndex,
+    required this.maxHeight,
+    required this.maxWidth,
     this.onClicked,
     this.textStyle,
     this.displayOnlyCenterTitle,
@@ -161,7 +161,7 @@ class CoverFlowCardItems extends StatelessWidget {
     final double distance = (centerIndex - index).abs();
     final defaultFontSize = 20.0;
 
-    if (displayOnlyCenterTitle) return 20.0;
+    if (displayOnlyCenterTitle!) return 20.0;
 
     if (distance >= 0 && distance < 1.0) {
       return (defaultFontSize - 5 * (distance - distance.floor()));
@@ -177,9 +177,9 @@ class CoverFlowCardItems extends StatelessWidget {
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Text(
-          titles[index],
+          titles![index],
           style: textStyle != null
-              ? textStyle.copyWith(fontSize: getFontSize(index))
+              ? textStyle!.copyWith(fontSize: getFontSize(index))
               : TextStyle(
                   fontSize: getFontSize(index),
                   color: Colors.black,
@@ -223,7 +223,7 @@ class CoverFlowCardItems extends StatelessWidget {
                 height: height > 0 ? height : 0,
                 child: item,
               ),
-              if (titles != null && !displayOnlyCenterTitle) _buildTitle(index),
+              if (titles != null && !displayOnlyCenterTitle!) _buildTitle(index),
             ],
           ),
         ),
@@ -241,7 +241,7 @@ class CoverFlowCardItems extends StatelessWidget {
           ...images.map<Widget>((item) {
             return _buildItem(item);
           }).toList(),
-          if (titles != null && displayOnlyCenterTitle)
+          if (titles != null && displayOnlyCenterTitle!)
             _buildTitle(centerIndex.toInt()),
         ],
       ),
