@@ -223,7 +223,8 @@ class CoverFlowCardItems extends StatelessWidget {
                 height: height > 0 ? height : 0,
                 child: item,
               ),
-              if (titles != null && !displayOnlyCenterTitle!) _buildTitle(index),
+              if (titles != null && !displayOnlyCenterTitle!)
+                _buildTitle(index),
             ],
           ),
         ),
