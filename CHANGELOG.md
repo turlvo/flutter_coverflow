@@ -1,3 +1,6 @@
+## [2.0.2]
+* Added left, center, right tap event
+
 ## [2.0.1]
 * Fix dart formatter
 
