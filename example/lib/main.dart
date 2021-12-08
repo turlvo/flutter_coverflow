@@ -84,12 +84,14 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Center(
         child: SizedBox(
-          height: 200,
           child: CoverFlow(
-            images: images2,
-            titles: titles,
-            textStyle: TextStyle(color: Colors.red),
-          ),
+              images: images2,
+              titles: titles,
+              textStyle: TextStyle(color: Colors.red),
+              // displayOnlyCenterTitle: true,
+              onCenterItemSelected: (index) {
+                print('Selected Item\'s index: $index');
+              }),
         ),
       ),
     );
