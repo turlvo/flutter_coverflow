@@ -1,6 +1,6 @@
 name: coverflow
 description: A Flutter package project that is a simple horizontal coverflow widget.
-version: 2.0.2
+version: 2.0.3
 homepage: https://github.com/turlvo/flutter_coverflow
 
 environment:
@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  simple_shadow: ^0.2.0
 
 dev_dependencies:
   flutter_test:

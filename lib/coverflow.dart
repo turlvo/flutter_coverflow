@@ -1,6 +1,7 @@
 library coverflow;
 
 import 'package:flutter/material.dart';
+import 'package:simple_shadow/simple_shadow.dart';
 
 class CoverFlow extends StatefulWidget {
   final List<String>? titles;
@@ -8,6 +9,8 @@ class CoverFlow extends StatefulWidget {
   final TextStyle? textStyle;
   final bool displayOnlyCenterTitle;
   final Function? onCenterItemSelected;
+  final double? shadowOpacity;
+  final Offset? shadowOffset;
 
   CoverFlow({
     required this.images,
@@ -15,6 +18,8 @@ class CoverFlow extends StatefulWidget {
     this.onCenterItemSelected,
     this.textStyle,
     this.displayOnlyCenterTitle = false,
+    this.shadowOpacity,
+    this.shadowOffset,
   });
 
   @override
@@ -82,6 +87,8 @@ class _CoverFlowState extends State<CoverFlow> {
                   centerWidgetWidth: centerWidgetWidth,
                   nearWidgetWidth: nearWidgetWidth,
                   farWidgetWidth: farWidgetWidth,
+                  shadowOffset: widget.shadowOffset,
+                  shadowOpacity: widget.shadowOpacity,
                 ),
                 Positioned.fill(
                   child: PageView.builder(
@@ -112,6 +119,8 @@ class CoverFlowCardItems extends StatelessWidget {
   final double centerWidgetWidth;
   final double nearWidgetWidth;
   final double farWidgetWidth;
+  final double? shadowOpacity;
+  final Offset? shadowOffset;
 
   CoverFlowCardItems({
     required this.images,
@@ -124,6 +133,8 @@ class CoverFlowCardItems extends StatelessWidget {
     required this.farWidgetWidth,
     this.textStyle,
     this.displayOnlyCenterTitle,
+    this.shadowOpacity,
+    this.shadowOffset,
   });
 
   double getCardPosition(int index) {
@@ -245,9 +256,12 @@ class CoverFlowCardItems extends StatelessWidget {
           child: Stack(
             children: <Widget>[
               Container(
-                color: Colors.red,
                 width: width.toDouble(),
-                child: item,
+                child: SimpleShadow(
+                  offset: shadowOffset ?? Offset(0, 0),
+                  opacity: shadowOpacity ?? 0.0,
+                  child: item,
+                ),
               ),
               if (titles != null && !displayOnlyCenterTitle!)
                 _buildTitle(index),

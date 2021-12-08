@@ -1,3 +1,6 @@
+## [2.0.3]
+* Added item's shadow and parameters
+
 ## [2.0.2]
 * Added left, center, right tap event
 

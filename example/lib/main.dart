@@ -85,13 +85,16 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: SizedBox(
           child: CoverFlow(
-              images: images2,
-              titles: titles,
-              textStyle: TextStyle(color: Colors.red),
-              // displayOnlyCenterTitle: true,
-              onCenterItemSelected: (index) {
-                print('Selected Item\'s index: $index');
-              }),
+            images: images2,
+            titles: titles,
+            textStyle: TextStyle(color: Colors.red),
+            // displayOnlyCenterTitle: true,
+            onCenterItemSelected: (index) {
+              print('Selected Item\'s index: $index');
+            },
+            shadowOpacity: 0.3,
+            shadowOffset: Offset(3, 8),
+          ),
         ),
       ),
     );
