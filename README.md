@@ -11,7 +11,7 @@ A simple horizontal coverflow widget.
 
 # Installation
 
-Add `coverflow: ^2.0.0` to your `pubspec.yaml` dependecies. And import it:
+Add `coverflow: ^0.0.3` to your `pubspec.yaml` dependecies. And import it:
 
 ```
 import 'package:coverflow/coverflow.dart';
@@ -70,6 +70,11 @@ final List<String> titles = [
             images: images,
             titles: titles,
             textStyle: TextStyle(color: Colors.red),
+            onCenterItemSelected: (index) {
+              print('Selected Item\'s index: $index');
+            },
+            shadowOpacity: 0.3,
+            shadowOffset: Offset(3, 8),
           ),
         ),
       ),
@@ -85,5 +90,10 @@ CoverFlow(
     titles: titles,
     displayOnlyCenterTitle: true,
     textStyle: TextStyle(color: Colors.red),
+    onCenterItemSelected: (index) {
+      print('Selected Item\'s index: $index');
+    },
+    shadowOpacity: 0.3,
+    shadowOffset: Offset(3, 8),
 )
 ```

@@ -21,9 +21,9 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, this.title}) : super(key: key);
+  MyHomePage({Key key, this.title}) : super(key: key);
 
-  final String? title;
+  final String title;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -84,11 +84,16 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Center(
         child: SizedBox(
-          height: 200,
           child: CoverFlow(
             images: images2,
             titles: titles,
             textStyle: TextStyle(color: Colors.red),
+            // displayOnlyCenterTitle: true,
+            onCenterItemSelected: (index) {
+              print('Selected Item\'s index: $index');
+            },
+            shadowOpacity: 0.3,
+            shadowOffset: Offset(3, 8),
           ),
         ),
       ),

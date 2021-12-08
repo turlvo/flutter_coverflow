@@ -2,19 +2,25 @@ library coverflow;
 
 import 'package:flutter/material.dart';
 
+import 'simple_shadow.dart';
+
 class CoverFlow extends StatefulWidget {
-  final List<String>? titles;
+  final List<String> titles;
   final List<Widget> images;
-  final TextStyle? textStyle;
+  final TextStyle textStyle;
   final bool displayOnlyCenterTitle;
-  final Function? onClicked;
+  final Function onCenterItemSelected;
+  final double shadowOpacity;
+  final Offset shadowOffset;
 
   CoverFlow({
-    required this.images,
+    @required this.images,
     this.titles,
-    this.onClicked,
+    this.onCenterItemSelected,
     this.textStyle,
     this.displayOnlyCenterTitle = false,
+    this.shadowOpacity,
+    this.shadowOffset,
   });
 
   @override
@@ -22,17 +28,17 @@ class CoverFlow extends StatefulWidget {
 }
 
 class _CoverFlowState extends State<CoverFlow> {
-  PageController? _pageController;
-  double currentIndex = 0;
+  PageController _pageController;
+  double _currentPagePosition = 0;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: currentIndex.toInt());
-    _pageController!.addListener(
+    _pageController = PageController(initialPage: _currentPagePosition.toInt());
+    _pageController.addListener(
       () {
         setState(() {
-          currentIndex = _pageController!.page ?? 0;
+          _currentPagePosition = _pageController.page ?? 0;
         });
       },
     );
@@ -44,28 +50,58 @@ class _CoverFlowState extends State<CoverFlow> {
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          return Stack(
-            children: <Widget>[
-              CoverFlowCardItems(
-                images: widget.images,
-                titles: widget.titles,
-                textStyle: widget.textStyle,
-                centerIndex: currentIndex,
-                maxWidth: constraints.maxWidth,
-                maxHeight: constraints.maxHeight,
-                displayOnlyCenterTitle: widget.displayOnlyCenterTitle,
-                onClicked: widget.onClicked,
-              ),
-              Positioned.fill(
-                child: PageView.builder(
-                  itemCount: widget.images.length,
-                  controller: _pageController,
-                  itemBuilder: (context, index) {
-                    return Container();
-                  },
+          final double centerWidgetWidth = constraints.maxWidth / 4;
+          final double nearWidgetWidth = centerWidgetWidth / 5 * 4;
+          final double farWidgetWidth = centerWidgetWidth / 5 * 3;
+
+          return GestureDetector(
+            onTapUp: (detail) {
+              final double centerPosition = constraints.maxWidth / 2;
+
+              final double centerLeftEdge =
+                  centerPosition - centerWidgetWidth / 2;
+              final double centerRightEdge =
+                  centerPosition + centerWidgetWidth / 2;
+
+              if (detail.localPosition.dx <= centerLeftEdge) {
+                _pageController.animateToPage(_currentPagePosition.toInt() - 1,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.easeIn);
+              } else if (detail.localPosition.dx >= centerRightEdge) {
+                _pageController.animateToPage(_currentPagePosition.toInt() + 1,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.easeIn);
+              } else {
+                widget.onCenterItemSelected(_currentPagePosition.toInt());
+              }
+            },
+            child: Stack(
+              children: <Widget>[
+                CoverFlowCardItems(
+                  images: widget.images,
+                  titles: widget.titles,
+                  textStyle: widget.textStyle,
+                  currentPagePosition: _currentPagePosition,
+                  maxWidth: constraints.maxWidth,
+                  maxHeight: constraints.maxHeight,
+                  displayOnlyCenterTitle: widget.displayOnlyCenterTitle,
+                  centerWidgetWidth: centerWidgetWidth,
+                  nearWidgetWidth: nearWidgetWidth,
+                  farWidgetWidth: farWidgetWidth,
+                  shadowOffset: widget.shadowOffset,
+                  shadowOpacity: widget.shadowOpacity,
                 ),
-              ),
-            ],
+                Positioned.fill(
+                  child: PageView.builder(
+                    itemCount: widget.images.length,
+                    controller: _pageController,
+                    itemBuilder: (context, index) {
+                      return Container();
+                    },
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),
@@ -75,33 +111,38 @@ class _CoverFlowState extends State<CoverFlow> {
 
 class CoverFlowCardItems extends StatelessWidget {
   final List<Widget> images;
-  final List<String>? titles;
-  final Function? onClicked;
-  final double centerIndex;
+  final List<String> titles;
+  final double currentPagePosition;
   final double maxHeight;
   final double maxWidth;
-  final TextStyle? textStyle;
-  final bool? displayOnlyCenterTitle;
+  final TextStyle textStyle;
+  final bool displayOnlyCenterTitle;
+  final double centerWidgetWidth;
+  final double nearWidgetWidth;
+  final double farWidgetWidth;
+  final double shadowOpacity;
+  final Offset shadowOffset;
 
   CoverFlowCardItems({
-    required this.images,
-    required this.titles,
-    required this.centerIndex,
-    required this.maxHeight,
-    required this.maxWidth,
-    this.onClicked,
+    @required this.images,
+    @required this.titles,
+    @required this.currentPagePosition,
+    @required this.maxHeight,
+    @required this.maxWidth,
+    @required this.centerWidgetWidth,
+    @required this.nearWidgetWidth,
+    @required this.farWidgetWidth,
     this.textStyle,
     this.displayOnlyCenterTitle,
+    this.shadowOpacity,
+    this.shadowOffset,
   });
 
   double getCardPosition(int index) {
     final double center = maxWidth / 2;
-    final double centerWidgetWidth = maxWidth / 4;
     final double basePosition = center - centerWidgetWidth / 2;
-    final distance = centerIndex - index;
 
-    final double nearWidgetWidth = centerWidgetWidth / 5 * 4;
-    final double farWidgetWidth = centerWidgetWidth / 5 * 3;
+    final distance = currentPagePosition - index;
 
     if (distance == 0) {
       return basePosition;
@@ -133,10 +174,7 @@ class CoverFlowCardItems extends StatelessWidget {
   }
 
   double getCardWidth(int index) {
-    final double distance = (centerIndex - index).abs();
-    final double centerWidgetWidth = maxWidth / 4;
-    final double nearWidgetWidth = centerWidgetWidth / 5 * 4;
-    final double farWidgetWidth = centerWidgetWidth / 5 * 3;
+    final double distance = (currentPagePosition - index).abs();
 
     if (distance >= 0.0 && distance < 1.0) {
       return centerWidgetWidth -
@@ -150,7 +188,7 @@ class CoverFlowCardItems extends StatelessWidget {
   }
 
   Matrix4 getTransform(int index) {
-    final distance = centerIndex - index;
+    final distance = currentPagePosition - index;
 
     return Matrix4.identity()
       ..setEntry(3, 2, 0.007)
@@ -158,10 +196,10 @@ class CoverFlowCardItems extends StatelessWidget {
   }
 
   double getFontSize(int index) {
-    final double distance = (centerIndex - index).abs();
+    final double distance = (currentPagePosition - index).abs();
     final defaultFontSize = 20.0;
 
-    if (displayOnlyCenterTitle!) return 20.0;
+    if (displayOnlyCenterTitle) return 20.0;
 
     if (distance >= 0 && distance < 1.0) {
       return (defaultFontSize - 5 * (distance - distance.floor()));
@@ -177,9 +215,9 @@ class CoverFlowCardItems extends StatelessWidget {
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Text(
-          titles![index],
+          titles[index],
           style: textStyle != null
-              ? textStyle!.copyWith(fontSize: getFontSize(index))
+              ? textStyle.copyWith(fontSize: getFontSize(index))
               : TextStyle(
                   fontSize: getFontSize(index),
                   color: Colors.black,
@@ -197,7 +235,7 @@ class CoverFlowCardItems extends StatelessWidget {
   //     transform: getTransform(index),
   //     alignment: FractionalOffset.center,
   //     child: Container(
-  //       height: centerIndex == index ? height + 10 : height,
+  //       height: currentPagePosition == index ? height + 10 : height,
   //       width: width,
   //       child: child,
   //     ), // <<< set your widget here
@@ -207,7 +245,7 @@ class CoverFlowCardItems extends StatelessWidget {
   Widget _buildItem(Widget item) {
     final int index = images.indexOf(item);
     final width = getCardWidth(index);
-    final height = maxHeight - 20 * (centerIndex - index).abs();
+    // final height = maxHeight - 20 * (currentPagePosition - index).abs();
     final position = getCardPosition(index);
 
     return Positioned(
@@ -220,11 +258,13 @@ class CoverFlowCardItems extends StatelessWidget {
             children: <Widget>[
               Container(
                 width: width.toDouble(),
-                height: height > 0 ? height : 0,
-                child: item,
+                child: SimpleShadow(
+                  offset: shadowOffset ?? Offset(0, 0),
+                  opacity: shadowOpacity ?? 0.0,
+                  child: item,
+                ),
               ),
-              if (titles != null && !displayOnlyCenterTitle!)
-                _buildTitle(index),
+              if (titles != null && !displayOnlyCenterTitle) _buildTitle(index),
             ],
           ),
         ),
@@ -242,8 +282,8 @@ class CoverFlowCardItems extends StatelessWidget {
           ...images.map<Widget>((item) {
             return _buildItem(item);
           }).toList(),
-          if (titles != null && displayOnlyCenterTitle!)
-            _buildTitle(centerIndex.toInt()),
+          if (titles != null && displayOnlyCenterTitle)
+            _buildTitle(currentPagePosition.toInt()),
         ],
       ),
     );
